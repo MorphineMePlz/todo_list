@@ -5,7 +5,7 @@ import styles from "./index.module.scss";
 interface InputTaskProps {
   id: string;
   title: string;
-  onDone: (id: string) => void;
+  cheked: boolean;
   onEdited: (id: string, title: string) => void;
   onRemoved: (id: string) => void;
 }
@@ -13,15 +13,15 @@ interface InputTaskProps {
 export const InputTask: React.FC<InputTaskProps> = ({
   id,
   title,
-  onDone,
+  cheked,
   onEdited,
   onRemoved,
 }) => {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(cheked);
   const [isEditMode, setIsEditMode] = useState(false);
   const [value, setValue] = useState(title);
   const editTitleInputRef = useRef<HTMLInputElement>(null);
-
+  console.log(checked);
   useEffect(() => {
     if (isEditMode) {
       editTitleInputRef?.current?.focus();
@@ -30,7 +30,10 @@ export const InputTask: React.FC<InputTaskProps> = ({
 
   return (
     <div className={styles.inputTask}>
-      <label className={styles.inputTaskLabel}>
+      <label
+        className={styles.inputTaskLabel}
+        style={checked ? { textDecoration: "line-through" } : undefined}
+      >
         <input
           type="checkbox"
           disabled={isEditMode}
@@ -38,11 +41,6 @@ export const InputTask: React.FC<InputTaskProps> = ({
           className={styles.inputTaskCheckbox}
           onChange={(e) => {
             setChecked(e.target.checked);
-            if (e.target.checked) {
-              setTimeout(() => {
-                onDone(id);
-              }, 300);
-            }
           }}
         />
 
